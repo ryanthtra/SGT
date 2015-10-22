@@ -11,6 +11,8 @@ var student_array = [];
  * @type {string[]}
  */
 var inputIds = ["studentName", "course", "studentGrade"];
+
+var entryId = 0;
 /**
  * addClicked - Event Handler when user clicks the add button
  */
@@ -36,9 +38,10 @@ function addStudent()
 {
     var newStudent =
     {
+        entry_id: 0,
         name: '',
         course: '',
-        grade: ''
+        grade: 0
     };
 
     var temp_selector = null;
@@ -59,7 +62,11 @@ function addStudent()
                 break;
         }
     }
-    student_array.push(newStudent);
+    // Add unique entry id
+    newStudent.entry_id = entryId++;
+
+    student_array[student_array.length] = newStudent;
+    updateData();
     return undefined;
 }
 /**
@@ -78,21 +85,24 @@ function clearAddStudentForm()
  */
 function calculateAverage()
 {
-    val avg = 0;
+    var val_avg = 0;
 
     for (var i = 0; i < student_array.length; i++)
     {
-        val_avg += student_array[i].grade;
+        val_avg += parseInt(student_array[i].grade);
     }
 
-    val_avg /= student_array.length;
-    return val_avg;
+    if (student_array.length > 0)
+        val_avg /= student_array.length;
+    return Math.floor(val_avg);
 }
 /**
  * updateData - centralized function to update the average and call student list update
  */
 function updateData()
 {
+    $('.avgGrade').text(calculateAverage());
+    updateStudentList();
 
 }
 /**
@@ -100,7 +110,11 @@ function updateData()
  */
 function updateStudentList()
 {
+    if (student_array.length > 0)
+        $('#unavailable').remove();
 
+    for (var i = 0; i < student_array.length; i++)
+        addStudentToDom(student_array[i]);
 }
 /**
  * addStudentToDom - take in a student object, create html elements from the values and then append the elements
@@ -109,7 +123,33 @@ function updateStudentList()
  */
 function addStudentToDom(studentObj)
 {
+    // If the student entry is already in the DOM, then don't add it
+    var found = $('td.entry-id:contains(' + studentObj.entry_id + ')').text();
+    if (found != "")
+        return;
 
+    var student_table = $('.student-list>tbody');
+
+    var new_student = $('<tr>');
+    new_student.append($('<td>').text(studentObj.name));
+    new_student.append($('<td>').text(studentObj.course));
+    new_student.append($('<td>').text(studentObj.grade));
+    new_student.append($('<td>').append($('<button>',
+        {
+            type: 'button',
+            class: 'btn btn-danger btn-xs',
+        }).text('Delete')));
+
+
+    // Adds invisible entry id
+    var new_id = $('<td>',
+        {
+            class: 'hidden entry-id'
+        });
+    new_id.text(studentObj.entry_id);
+    new_student.append(new_id);
+
+    student_table.append(new_student);
 }
 /**
  * reset - resets the application to initial state. Global variables reset, DOM get reset to initial load state
@@ -117,6 +157,7 @@ function addStudentToDom(studentObj)
 function reset()
 {
     student_array = [];
+    $('div.student-list-container').append($('<h3>', {id: 'unavailable'}).append($('<b>').text('User Info Unavailable')));
 }
 
 /**
@@ -125,5 +166,6 @@ function reset()
 //document.addEventListener("DOMContentLoaded", function(event)
 $(document).ready(function()
 {
-
+    reset();
+    updateData();
 });
