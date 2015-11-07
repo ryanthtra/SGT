@@ -30,11 +30,47 @@ var INVALID_COURSE = 1;
 var INVALID_GRADE = 2;
 var ERROR_MESSAGE_CLASS_NAME = 3;
 
+var API_KEY = 'PaQansRMfb';
+
+/**
+ * populateClicked -
+ */
+function populateClicked()
+{
+    $.ajax(
+        {
+            method: 'POST',
+            dataType: 'json',
+            url: 'http://s-apis.learningfuze.com/sgt/get',
+            data:
+            {
+                api_key: API_KEY
+            },
+            success: function(result)
+            {
+                //global_result = result['data'];
+                populateStudentArrayFromDB(result['data']);
+            }
+        }
+    );
+}
+/**
+ *
+ * @param db_array
+ */
+function populateStudentArrayFromDB(db_array)
+{
+    for (var i = 0; i < db_array.length; i++)
+    {
+        addStudent(db_array[i]);
+        updateData();
+    }
+};
 /**
  * addClicked - Event Handler when user clicks the add button
  */
 function addClicked() {
-    if (addStudent())
+    if (addStudent(null))
         updateData();
 }
 /**
@@ -46,23 +82,32 @@ function cancelClicked() {
 /**
  * addStudent - creates a student objects based on input fields in the form and adds the object to global student array
  *
+ * @param db_student_object - null if we're entering a new student ourselves; not null if we're passing a student from the database
  * @return boolean
  */
-function addStudent() {
+function addStudent(db_student_object) {
     console.log('test');
     removeErrorMessagesFromDom();
     var studentObject = {};
+    if (db_student_object == null)
+    {
+        for (var x in inputIds)
+        {
+            var id_temp = inputIds[x];
+            var value = $('#' + inputIds[x]).val();
+            studentObject[id_temp] = value;
+            console.log(studentObject);
+        }
+        if (checkForErrorsInForm(studentObject) == true)
+            return false;
 
-    for (var x in inputIds) {
-        var id_temp = inputIds[x];
-        var value = $('#' + id_temp).val();
-        studentObject[id_temp] = value;
-        console.log(studentObject);
+        studentObject.student_id = id_counter();
     }
-    if (checkForErrorsInForm(studentObject) == true)
-        return false;
-
-    studentObject.student_id = id_counter();
+    else
+    {
+        studentObject = db_student_object;
+        studentObject.student_id = db_student_object.id;
+    }
 
     student_array.push(studentObject);
     return true;
@@ -174,7 +219,7 @@ function calculateAverage() {
     var total_grades = 0;
     var total_students = 0;
     for (i in student_array) {
-        total_grades = total_grades + parseInt(student_array[i].studentGrade);
+        total_grades = total_grades + parseInt(student_array[i].grade);
         ++total_students;
     }
     var average = Math.round(total_grades/total_students);
@@ -324,6 +369,7 @@ function reset() {
     for (var i = 0; i < $input_elems.length; i++)
         inputIds.push($input_elems[i].getAttribute('id'));
 }
+
 
 /**
  * Listen for the document to load and reset the data to the initial state
