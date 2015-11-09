@@ -32,6 +32,9 @@ var ERROR_MESSAGE_CLASS_NAME = 3;
 
 var API_KEY = 'PaQansRMfb';
 var global_result = null;
+var INDEX_NAME = 0;
+var INDEX_COURSE = 1;
+var INDEX_GRADE = 2;
 /**
  * populateClicked -
  */
@@ -62,7 +65,7 @@ function populateStudentArrayFromDB(db_array)
 {
     for (var i = 0; i < db_array.length; i++)
     {
-        addStudent(db_array[i]);
+        addStudent(db_array[i], db_array[i].id);
         updateData();
     }
 };
@@ -70,8 +73,36 @@ function populateStudentArrayFromDB(db_array)
  * addClicked - Event Handler when user clicks the add button
  */
 function addClicked() {
-    if (addStudent(null))
-        updateData();
+    addStudentToDB();
+    //if (addStudent(null))
+    //    updateData();
+}
+/**
+ *
+ */
+function addStudentToDB()
+{
+    $.ajax(
+    {
+        method: 'POST',
+        dataType: 'json',
+        url: 'http://s-apis.learningfuze.com/sgt/create',
+        data:
+        {
+            api_key: API_KEY,
+            name: $('#' + inputIds[INDEX_NAME]).val(),
+            course: $('#' + inputIds[INDEX_COURSE]).val(),
+            grade: $('#' + inputIds[INDEX_GRADE]).val()
+        },
+        success: function(result)
+        {
+            if (result['success'] == true)
+            {
+                addStudent(null, result['new_id']);
+                updateData();
+            }
+        }
+    });
 }
 /**
  * cancelClicked - Event Handler when user clicks the cancel button, should clear out student form
@@ -85,7 +116,7 @@ function cancelClicked() {
  * @param db_student_object - null if we're entering a new student ourselves; not null if we're passing a student from the database
  * @return boolean
  */
-function addStudent(db_student_object) {
+function addStudent(db_student_object, new_student_id) {
     console.log('test');
     removeErrorMessagesFromDom();
     var studentObject = {};
@@ -101,14 +132,15 @@ function addStudent(db_student_object) {
         if (checkForErrorsInForm(studentObject) == true)
             return false;
 
-        studentObject.student_id = id_counter();
+        studentObject.student_id = new_student_id;
     }
     else
     {
         studentObject = db_student_object;
-        studentObject.student_id = db_student_object.id;
+        studentObject.student_id = new_student_id;
     }
 
+    // Check if the student is already in the array
     student_array.push(studentObject);
     return true;
 }
@@ -288,15 +320,38 @@ function addStudentToDom(studentObj) {
     removeUnavailableLabelFromDom();
 }
 
+
+function removeStudentFromDB(student_elem)
+{
+    $.ajax(
+        {
+            method: 'POST',
+            dataType: 'json',
+            url: 'http://s-apis.learningfuze.com/sgt/delete',
+            data:
+            {
+                api_key: API_KEY,
+                student_id: $(student_elem).attr("student_id")
+            },
+            success: function(result)
+            {
+                if (result['success'] == true)
+                {
+                    removeStudentFromDom(student_elem);
+                    removeStudentFromArray(student_elem);
+                    $('.avgGrade').text(calculateAverage());
+                }
+            }
+        }
+    )
+}
 /**
  * STUDENT-MADE FUNCTION
  * deleteStudent - calls functions for removing student from DOM and student_array
  */
 //Stefanie
 function deleteStudent(student_elem){
-    removeStudentFromDom(student_elem);
-    removeStudentFromArray(student_elem);
-    $('.avgGrade').text(calculateAverage());
+    removeStudentFromDB(student_elem);
 }
 
 /**
@@ -372,6 +427,12 @@ function reset() {
     $('.button-db').on('click', function()
     {
         populateClicked();
+    });
+
+    // Enable the add new student button
+    $('.button-add').on('click', function()
+    {
+        addClicked();
     });
 }
 
