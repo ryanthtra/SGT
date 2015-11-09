@@ -31,7 +31,7 @@ var INVALID_GRADE = 2;
 var ERROR_MESSAGE_CLASS_NAME = 3;
 
 var API_KEY = 'PaQansRMfb';
-
+var global_result = null;
 /**
  * populateClicked -
  */
@@ -48,7 +48,7 @@ function populateClicked()
             },
             success: function(result)
             {
-                //global_result = result['data'];
+                global_result = result['data'];
                 populateStudentArrayFromDB(result['data']);
             }
         }
@@ -363,11 +363,16 @@ function reset() {
     student_array = [];
     inputIds = [];
 
-
     // Set the inputIds array elements
     var $input_elems = $('.input-group>input[type=\"text\"], .input-group>input[type=\"number\"]');
     for (var i = 0; i < $input_elems.length; i++)
         inputIds.push($input_elems[i].getAttribute('id'));
+
+    // Enable the populate from db click-handler
+    $('.button-db').on('click', function()
+    {
+        populateClicked();
+    });
 }
 
 
