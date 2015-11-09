@@ -51,8 +51,28 @@ function populateClicked()
             },
             success: function(result)
             {
-                global_result = result['data'];
-                populateStudentArrayFromDB(result['data']);
+                if (result.success == true)
+                {
+                    global_result = result['data'];
+                    populateStudentArrayFromDB(result['data']);
+                }
+                else
+                {
+                    var error_message = '';
+                    for (var i = 0; i < result.error.length; i++)
+                    {
+                        error_message += result.error[i] + '\n';
+                    }
+                    $('.modal-title').text("Error");
+                    $('.modal-body').text(error_message);
+                    $('#modal-error').modal();
+                }
+            },
+            error: function(result)
+            {
+                $('.modal-title').text("Error " + result.status);
+                $('.modal-body').text(result.statusText);
+                $('#modal-error').modal();
             }
         }
     );
@@ -101,6 +121,22 @@ function addStudentToDB()
                 addStudent(null, result['new_id']);
                 updateData();
             }
+            else
+            {
+                var error_message = '';
+                for (var i = 0; i < result.errors.length; i++)
+                {
+                    error_message += result.errors[i] + '\n';
+                }
+                $('.modal-body').text(error_message);
+                $('#modal-error').modal();
+            }
+        },
+        error: function(result)
+        {
+            $('.modal-title').text("Error " + result.status);
+            $('.modal-body').text(result.statusText);
+            $('#modal-error').modal();
         }
     });
 }
@@ -320,7 +356,10 @@ function addStudentToDom(studentObj) {
     removeUnavailableLabelFromDom();
 }
 
-
+/**
+ * removeStudentFromDB
+ * @param student_elem - the student object's DOM element
+ */
 function removeStudentFromDB(student_elem)
 {
     $.ajax(
@@ -341,6 +380,22 @@ function removeStudentFromDB(student_elem)
                     removeStudentFromArray(student_elem);
                     $('.avgGrade').text(calculateAverage());
                 }
+                else
+                {
+                    var error_message = '';
+                    for (var i = 0; i < result.errors.length; i++)
+                    {
+                        error_message += result.errors[i] + '\n';
+                    }
+                    $('.modal-body').text(error_message);
+                    $('#modal-error').modal();
+                }
+            },
+            error: function(result)
+            {
+                $('.modal-title').text("Error " + result.status);
+                $('.modal-body').text(result.statusText);
+                $('#modal-error').modal();
             }
         }
     )
