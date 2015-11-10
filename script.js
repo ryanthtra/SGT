@@ -116,6 +116,7 @@ function addStudentToDB()
         },
         success: function(result)
         {
+            removeErrorMessagesFromDom();
             if (result['success'] == true)
             {
                 addStudent(null, result['new_id']);
@@ -126,10 +127,21 @@ function addStudentToDB()
                 var error_message = '';
                 for (var i = 0; i < result.errors.length; i++)
                 {
-                    error_message += result.errors[i] + '\n';
+                    if (result.errors[i].search('name') != -1)
+                    {
+                        addErrorMessageToDom(0, result.errors[i]);
+                    }
+                    if (result.errors[i].search('course') != -1)
+                    {
+                        addErrorMessageToDom(1, result.errors[i]);
+                    }
+                    if (result.errors[i].search('grade') != -1)
+                    {
+                        addErrorMessageToDom(2, result.errors[i]);
+                    }
                 }
-                $('.modal-body').text(error_message);
-                $('#modal-error').modal();
+                //$('.modal-body').text(error_message);
+                //$('#modal-error').modal();
             }
         },
         error: function(result)
@@ -244,10 +256,18 @@ function checkForErrorsInForm(studentObject)
  *  input that has the bad data
  * @param errorIndex
  */
-function addErrorMessageToDom(errorIndex)
+function addErrorMessageToDom(errorIndex, message)
 {
     var $target_div = $('#' + inputIds[errorIndex]).parent();
-    var $error_message = $('<p>').text(error_messages[errorIndex]);
+    var $error_message = null;
+    if (message == null)
+    {
+        $error_message = $('<p>').text(error_messages[errorIndex]);
+    }
+    else
+    {
+        $error_message = $('<p>').text(message);
+    }
     $error_message.addClass(error_messages[ERROR_MESSAGE_CLASS_NAME]);
     $error_message.css(
         {
