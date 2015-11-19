@@ -6,7 +6,7 @@ var id_counter = generateStudentId();
  * student_array - global array to hold student objects
  * @type {Array}
  */
-var student_array = [];
+var student_array = {};//[];
 /**
  * inputIds - id's of the elements that are used to add students
  * @type {string[]}
@@ -83,6 +83,8 @@ function populateClicked()
  */
 function populateStudentArrayFromDB(db_array)
 {
+    $('.student-list>tbody').html('');
+    student_array = [];
     for (var i = 0; i < db_array.length; i++)
     {
         addStudent(db_array[i], db_array[i].id);
@@ -189,7 +191,7 @@ function addStudent(db_student_object, new_student_id) {
     }
 
     // Check if the student is already in the array
-    student_array.push(studentObject);
+    student_array[new_student_id.toString()] = studentObject; //push(studentObject);
     return true;
 }
 
@@ -306,8 +308,8 @@ function clearAddStudentForm() {
 function calculateAverage() {
     var total_grades = 0;
     var total_students = 0;
-    for (i in student_array) {
-        total_grades = total_grades + parseInt(student_array[i].grade);
+    for (var student in student_array) {
+        total_grades = total_grades + parseInt(student_array[student].grade);
         ++total_students;
     }
     var average = Math.round(total_grades/total_students);
@@ -350,7 +352,11 @@ function addStudentToDom(studentObj) {
 
     for (var i in inputIds)
     {
-        $new_student.append($('<td>').text(studentObj[inputIds[i]]));
+        var new_data = $('<td>').text(studentObj[inputIds[i]]);
+        new_data.css({
+            overflow: 'hidden'
+        });
+        $new_student.append(new_data);
     }
 
     // Event delegation for any future delete buttons being added
@@ -530,3 +536,12 @@ document.addEventListener("DOMContentLoaded", function(event)
      addStudentToDom(student);
      TEST CODE*/
 });
+
+
+Object.size = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
