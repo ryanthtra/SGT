@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Name>StudentGradeTable</Name>
+    <ProjectGuid>{0962016f-a01c-40a1-9af1-a2f060855e9a}</ProjectGuid>
+    <RootNamespace>StudentGradeTable</RootNamespace>
+    <OutputType>Library</OutputType>
+    <ProjectTypeGuids>{A0786B88-2ADB-4C21-ABE8-AA2D79766269}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <IncludeDebugInformation>true</IncludeDebugInformation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <IncludeDebugInformation>false</IncludeDebugInformation>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include=".gitignore" />
+    <Compile Include="create.php" />
+    <Compile Include="delete.php" />
+    <Compile Include="get.php" />
+    <Compile Include="index.html" />
+    <Compile Include="lfz_sgt.sql" />
+    <Compile Include="mysql_connect.php" />
+    <Compile Include="mysql_connect.php.config" />
+    <Compile Include="README.md" />
+    <Compile Include="script.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="index.php" />
+  </ItemGroup>
+</Project>

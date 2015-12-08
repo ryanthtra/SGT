@@ -30,7 +30,7 @@ var INVALID_COURSE = 1;
 var INVALID_GRADE = 2;
 var ERROR_MESSAGE_CLASS_NAME = 3;
 
-var API_KEY = 'PaQansRMfb';
+var API_KEY = 'AbCdEfGhIj';//'PaQansRMfb';
 var global_result = null;
 var INDEX_NAME = 0;
 var INDEX_COURSE = 1;
@@ -44,7 +44,7 @@ function populateClicked()
         {
             method: 'POST',
             dataType: 'json',
-            url: 'http://s-apis.learningfuze.com/sgt/get',
+            url: 'get.php',
             data:
             {
                 api_key: API_KEY
@@ -59,9 +59,9 @@ function populateClicked()
                 else
                 {
                     var error_message = '';
-                    for (var i = 0; i < result.error.length; i++)
+                    for (var i = 0; i < result.errors.length; i++)
                     {
-                        error_message += result.error[i] + '\n';
+                        error_message += result.errors[i] + '\n';
                     }
                     $('.modal-title').text("Error");
                     $('.modal-body').text(error_message);
@@ -83,6 +83,8 @@ function populateClicked()
  */
 function populateStudentArrayFromDB(db_array)
 {
+    $('.student-list>tbody').html('');
+    student_array = [];
     for (var i = 0; i < db_array.length; i++)
     {
         addStudent(db_array[i], db_array[i].id);
@@ -106,7 +108,7 @@ function addStudentToDB()
     {
         method: 'POST',
         dataType: 'json',
-        url: 'http://s-apis.learningfuze.com/sgt/create',
+        url: 'create.php',
         data:
         {
             api_key: API_KEY,
@@ -366,7 +368,7 @@ function removeStudentFromDB(student_elem)
         {
             method: 'POST',
             dataType: 'json',
-            url: 'http://s-apis.learningfuze.com/sgt/delete',
+            url: 'delete.php',
             data:
             {
                 api_key: API_KEY,
@@ -454,9 +456,9 @@ function addUnavailableLabelToDom()
  */
 function removeUnavailableLabelFromDom()
 {
-    var label = document.getElementById('unavailable');
+    var label = $('#unavailable');
     if (label != null)
-        label.remove();
+        label.hide();
 }
 /**
  * reset - resets the application to initial state. Global variables reset, DOM get reset to initial load state
