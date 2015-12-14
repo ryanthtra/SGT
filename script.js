@@ -30,7 +30,9 @@ var INVALID_COURSE = 1;
 var INVALID_GRADE = 2;
 var ERROR_MESSAGE_CLASS_NAME = 3;
 
-var API_KEY = 'AbCdEfGhIj';//'PaQansRMfb';
+var API_KEY_READ_ONLY = 'QrStUvWxYz';
+var API_KEY_READ_WRITE = 'AbCdEfGhIj';
+var API_KEY = API_KEY_READ_WRITE; //'PaQansRMfb';
 var global_result = null;
 var INDEX_NAME = 0;
 var INDEX_COURSE = 1;
@@ -44,7 +46,7 @@ function populateClicked()
         {
             method: 'POST',
             dataType: 'json',
-            url: 'get.php',
+            url: 'http://edenprime.cloudapp.net/sgt/apis/get.php',//'apis/get.php',
             data:
             {
                 api_key: API_KEY
@@ -58,13 +60,13 @@ function populateClicked()
                 }
                 else
                 {
-                    var error_message = '';
+                    var error_message = $('<div>');
                     for (var i = 0; i < result.errors.length; i++)
                     {
-                        error_message += result.errors[i] + '\n';
+                        error_message.append($('<p>').text(result.errors[i]));
                     }
                     $('.modal-title').text("Error");
-                    $('.modal-body').text(error_message);
+                    $('.modal-body').html(error_message);
                     $('#modal-error').modal();
                 }
             },
@@ -108,7 +110,7 @@ function addStudentToDB()
     {
         method: 'POST',
         dataType: 'json',
-        url: 'create.php',
+        url: 'http://edenprime.cloudapp.net/sgt/apis/create.php',//'apis/create.php',
         data:
         {
             api_key: API_KEY,
@@ -125,12 +127,13 @@ function addStudentToDB()
             }
             else
             {
-                var error_message = '';
+                var error_message = $('<div>');
                 for (var i = 0; i < result.errors.length; i++)
                 {
-                    error_message += result.errors[i] + '\n';
+                    error_message.append($('<p>').text(result.errors[i]));
                 }
-                $('.modal-body').text(error_message);
+                $('.modal-title').text("Error");
+                $('.modal-body').html(error_message);
                 $('#modal-error').modal();
             }
         },
@@ -368,7 +371,7 @@ function removeStudentFromDB(student_elem)
         {
             method: 'POST',
             dataType: 'json',
-            url: 'delete.php',
+            url: 'http://edenprime.cloudapp.net/sgt/apis/delete.php',//'apis/delete.php',
             data:
             {
                 api_key: API_KEY,
@@ -384,12 +387,13 @@ function removeStudentFromDB(student_elem)
                 }
                 else
                 {
-                    var error_message = '';
+                    var error_message = $('<div>');
                     for (var i = 0; i < result.errors.length; i++)
                     {
-                        error_message += result.errors[i] + '\n';
+                        error_message.append($('<p>').text(result.errors[i]));
                     }
-                    $('.modal-body').text(error_message);
+                    $('.modal-title').text("Error");
+                    $('.modal-body').html(error_message);
                     $('#modal-error').modal();
                 }
             },

@@ -1,7 +1,9 @@
 <?php
+require("security.php");
+require("regextests.php");
 
 //******* MAIN CODE BELOW *******//
-$api_key = $_POST['api_key'];
+$api_key = makeSafeString($_POST['api_key']);
 $output = 
 	[
 		'success'=>false,
@@ -16,18 +18,18 @@ if ($creator_id < 0)
 }
 else
 {
-	$course = $_POST['course'];
+	$course = makeSafeString($_POST['course']);
 	$course_id = getCourseId($course);
 	if ($course_id < 0)
 		array_push($output['errors'], "Course doesn't exist!");
 
 	// TODO: check for multiple students with the same name
-	$student = $_POST['name'];
+	$student = makeSafeString($_POST['name']);
 	$student_id = getStudentId($student);
 	if ($student_id < 0)
 		array_push($output['errors'], "Student doesn't exist!");
 
-	$grade = $_POST['grade'];
+	$grade = makeSafeInt($_POST['grade']);
 	if (!testValidGrade($grade))
 		array_push($output['errors'], "Please enter a grade between 0 and 100.");
 
@@ -39,6 +41,9 @@ else
 }
 print(json_encode($output));
 //******* END MAIN CODE *******//
+
+
+
 
 function hasWriteAccess($api_key)
 {
@@ -105,10 +110,7 @@ function getStudentId($student_name)
 	}
 }
 
-function testValidGrade($grade)
-{
-	return ($grade >= 0 && $grade <= 100);
-}
+
 
 function addSGTEntry($creator_id, $student_id, $course_id, $grade)
 {

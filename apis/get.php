@@ -5,13 +5,13 @@ $api_key = $_POST['api_key'];
 $output = 
 	[
 		'success'=>false,
-		'error'=>array(),
+		'errors'=>array(),
 		'data'=>array()
 	];
 
 if (!hasReadAccess($api_key)) 
 {
-    array_push($output['error'], "Invalid/missing API key!");
+    array_push($output['errors'], "Invalid/missing API key!");
     print(json_encode($output));
 }
 else
@@ -47,7 +47,7 @@ function getEntries()
 	$output = 
 	[
 		'success'=>false,
-		'error'=>array(),
+		'errors'=>array(),
 		'data'=>array()
 	];
 	$query = 
