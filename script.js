@@ -46,7 +46,7 @@ function populateClicked()
         {
             method: 'POST',
             dataType: 'json',
-            url: 'http://noveria.westus.cloudapp.azure.com/SGT/apis/get.php',//'apis/get.php',
+            url: 'apis/get.php',//'http://noveria.westus.cloudapp.azure.com/SGT/apis/get.php',//'apis/get.php',
             data:
             {
                 api_key: API_KEY
@@ -110,7 +110,7 @@ function addStudentToDB()
     {
         method: 'POST',
         dataType: 'json',
-        url: 'http://noveria.westus.cloudapp.azure.com/SGT/apis/create.php',//'apis/create.php',
+        url: 'apis/create.php', //'http://noveria.westus.cloudapp.azure.com/SGT/apis/create.php',//'apis/create.php',
         data:
         {
             api_key: API_KEY,
@@ -371,7 +371,7 @@ function removeStudentFromDB(student_elem)
         {
             method: 'POST',
             dataType: 'json',
-            url: 'http://edenprime.cloudapp.net/sgt/apis/delete.php',//'apis/delete.php',
+            url: 'apis/delete.php',//'http://edenprime.cloudapp.net/sgt/apis/delete.php',//'apis/delete.php',
             data:
             {
                 api_key: API_KEY,
