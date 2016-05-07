@@ -46,7 +46,7 @@ function populateClicked()
         {
             method: 'POST',
             dataType: 'json',
-            url: 'http://edenprime.cloudapp.net/sgt/apis/get.php',//'apis/get.php',
+            url: 'http://noveria.westus.cloudapp.azure.com/SGT/apis/get.php',//'apis/get.php',
             data:
             {
                 api_key: API_KEY
@@ -110,7 +110,7 @@ function addStudentToDB()
     {
         method: 'POST',
         dataType: 'json',
-        url: 'http://edenprime.cloudapp.net/sgt/apis/create.php',//'apis/create.php',
+        url: 'http://noveria.westus.cloudapp.azure.com/SGT/apis/create.php',//'apis/create.php',
         data:
         {
             api_key: API_KEY,
